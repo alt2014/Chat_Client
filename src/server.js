@@ -10,7 +10,7 @@ function staticFile(req, res) {
 		}
 		res.writeHead(200);
 		res.end(data);
-		console.log("Returned index.html");
+		console.log("Requested:" + req.url);
 	});
 }
 
@@ -21,8 +21,15 @@ exports.init = function(PORT){
 	var app = http.createServer(staticFile);
 	app.listen(PORT);
 	var io = socket.listen(app);
+	io.sockets.on('connection', function(socket){
+		socket.emit('message', "Welcome to the chatroom!");
+		console.log("connection successful");
+		socket.on('chatSent', function(data){
+			console.log('Chat recieved by server');
+			socket.emit('recieveChat', data);
+			socket.broadcast.emit('recieveChat', data);
+		});
+	});
 	console.log("Server listening");
 
-
 }
-

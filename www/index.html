@@ -1,4 +1,45 @@
 <html>
-	<header></header>
-	<body><h1>HI!</h1></body>
+	<header>
+
+	</header>
+	<body>
+		<h1 id="welcome">HI!</h1>
+
+		<div id="chats"></div>
+		
+		<form action = "">
+			Your message: <input type="text" name="msg" id="msg"/>
+			<input type="button" value="send" id="submit">
+
+		</form>
+
+		<script src="socket.io/socket.io.js"></script>
+		<script>
+			var socket = io.connect("http://" + window.location.hostname + ":8080");
+			console.log(window.location.hostname);
+			socket.on('message', function(data){
+				document.getElementById("welcome").innerHTML = data;
+			});
+
+			socket.on('recieveChat', function(data){
+				document.getElementById("chats").innerHTML += "<br />" + data;
+			});
+			
+			var submitButton = document.getElementById("submit");
+
+			submitButton.onclick = function(){
+
+				var textBox = document.getElementById("msg");
+				var chatToSend = textBox.value;
+
+				console.log(chatToSend);
+
+				socket.emit('chatSent', chatToSend);
+
+				textBox.value = "";
+
+			}
+
+		</script>
+	</body>
 </html>
