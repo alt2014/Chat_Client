@@ -1,6 +1,6 @@
 {
-  "name": "chat client",
-  "version": "1.0",
+  "name": "chatclient",
+  "version": "1.0.0",
   "main": "index",
   "dependencies": {
     "connect":"2.x.x",
