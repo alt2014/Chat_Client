@@ -1,7 +1,14 @@
 <html>
-	<header>
-
-	</header>
+	<head>
+		<style>
+			.cursor {
+				position:fixed;
+				width: 5px;
+				height: 5px;
+				background: red;
+			}
+		</style>
+	</head>
 	<body>
 		<h1 id="welcome">HI!</h1>
 
@@ -15,6 +22,7 @@
 
 		<script src="socket.io/socket.io.js"></script>
 		<script>
+
 			var socket = io.connect("http://" + window.location.hostname + ":8080");
 			console.log(window.location.hostname);
 			socket.on('message', function(data){
@@ -24,6 +32,27 @@
 			socket.on('recieveChat', function(data){
 				document.getElementById("chats").innerHTML += "<br />" + data;
 			});
+
+			socket.on('cursor', function(data) {
+
+				console.log("received cursor", data);
+				var cursorId = data.myCursor;
+
+				var cDiv = document.getElementById("cursor_" + cursorId);
+				if (!cDiv) {
+					cDiv = document.createElement("div");
+					cDiv.id = "cursor_" + cursorId;
+					cDiv.className = "cursor";
+					document.getElementsByTagName("body")[0].appendChild(cDiv);
+				}
+
+				cDiv.style.left = data.data.x;
+				cDiv.style.top = data.data.y;
+
+
+
+
+			})
 			
 			var submitButton = document.getElementById("submit");
 
@@ -39,6 +68,10 @@
 				textBox.value = "";
 
 			}
+
+			document.getElementsByTagName("body")[0].addEventListener('mousemove', function(ev) {
+				socket.emit('cursor', { x: window.event.clientX, y: window.event.clientY});
+			})
 
 		</script>
 	</body>
